@@ -18,7 +18,7 @@ router.post("/purchase", userMiddleware, async function(req, res) {
   });
 
 router.get("/preview", async function(req, res){
-  const courses = await courseModel.find();
+  const courses = await courseModel.find({});
   res.json({
     courses
   })
