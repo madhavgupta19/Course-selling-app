@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const JWT_USER_PASSWORD = "madhavuser"
 const zod = require("zod");
 const bcrypt = require("bcrypt");
+const  { JWT_USER_PASSWORD } = require("../config");
 const { userModel } = require("../db");
 
 // Zod Schema for Validation
