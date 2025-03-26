@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const router = Router();
-const {adminModel} = require("../db");
+const {adminModel, courseModel} = require("../db");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const  { JWT_ADMIN_PASSWORD } = require("../config");
@@ -63,13 +63,17 @@ router.post("/signin", async function (req, res) {
           maxAge: 3600000 // 1 hour expiry
       });
 
-      res.json({ message: "User logged in successfully" });
+      res.json({ 
+        message: "User logged in successfully",
+        token: token
+      });
   } catch (error) {
+    console.error(error);
       res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
-router.post("./courses", adminMiddleware, async function (req, res){
+router.post("/courses", adminMiddleware, async function (req, res){
   const adminId = req.userId;
 
   const { title, description, imageUrl, price } = req.body;
@@ -78,8 +82,7 @@ router.post("./courses", adminMiddleware, async function (req, res){
     title : title,
     description : description,
     imageUrl : imageUrl,
-    price : price,
-    creatorId : adminId
+    price : price
   })
   res.json({
     message: "Course Created",
@@ -87,7 +90,7 @@ router.post("./courses", adminMiddleware, async function (req, res){
   })
 });
 
-router.put("./courses", adminMiddleware, async function (req, res) {
+router.put("/courses", adminMiddleware, async function (req, res) {
   const adminId = req.userId;
 
   const { title, description, imageUrl, price, courseId } = req.body;
