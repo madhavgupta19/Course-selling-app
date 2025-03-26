@@ -4,7 +4,8 @@ const jwt = require("jsonwebtoken");
 const zod = require("zod");
 const bcrypt = require("bcrypt");
 const  { JWT_USER_PASSWORD } = require("../config");
-const { userModel } = require("../db");
+const { userModel, purchaseModel, courseModel } = require("../db");
+const userMiddleware = require("../Middlewares/user");
 
 // Zod Schema for Validation
 const signupSchema = zod.object({
@@ -71,11 +72,26 @@ router.post("/signin", async function (req, res) {
   }
 });
 
+router.get("/purchased-courses", userMiddleware, async function (req, res) {
+  const userId = req.userId;
+  const purchases = await purchaseModel.find({
+    userId,
+});
 
+let purchasedCourseIds = [];
 
+for (let i = 0; i<purchases.length;i++){ 
+    purchasedCourseIds.push(purchases[i].courseId)
+}
 
-router.get("/purchased-courses", (req, res) =>
-  res.json({ message: "Purchased courses retrieved successfully" })
-);
+const coursesData = await courseModel.find({
+    _id: { $in: purchasedCourseIds }
+})
+
+res.json({
+    purchases,
+    coursesData
+})
+});
 
 module.exports = router;
