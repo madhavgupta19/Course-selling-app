@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const  { JWT_ADMIN_PASSWORD } = require("../config");
 
 const zod = require("zod");
+const adminMiddleware = require("../Middlewares/admin");
 
 // Zod Schema for Validation
 const signupSchema = zod.object({
@@ -67,9 +68,24 @@ router.post("/signin", async function (req, res) {
       res.status(500).json({ message: "Internal Server Error" });
   }
 });
-// router.post("/", (req, res) => res.json({ message: "Admin courses in successfully" }));
-// router.put("/" ,(req, res) => res.json({ message: "Change by admin logged in successfully" }));
-// router.get("/bulk", (req, res) => res.json({ message: "COurses logged in successfully" }));
+
+router.post("./courses", adminMiddleware, async function (req, res){
+  const adminId = req.userId;
+
+  const { title, description, imageUrl, price } = req.body;
+
+  const course = await courseModel.create({
+    title : title,
+    description : description,
+    imageUrl : imageUrl,
+    price : price,
+    creatorId : adminId
+  })
+  res.json({
+    message: "Course Created",
+    CourseID : course._id
+  })
+});
 
 module.exports = router
 
