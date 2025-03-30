@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {courseModel} = require("../db");
+const {purchaseModel, courseModel} = require("../db");
 const userMiddleware = require("../Middlewares/user");
 
 
@@ -8,7 +8,7 @@ router.post("/purchase", userMiddleware, async function(req, res) {
   const userId = req.userId;
   const courseId = req.body.courseId;
 
-  await courseModel.create({ 
+  await purchaseModel.create({ 
     userId,
     courseId
   })
